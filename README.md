@@ -1,8 +1,8 @@
-Job Recommendation System with Resume Parsing
-Overview
+# Job Recommendation System with Resume Parsing
+## Overview
 Tired of hopping between multiple job sites like LinkedIn, Indeed, and Glassdoor to find your perfect job? This comprehensive Job Recommendation System streamlines the process by integrating a .NET backend with a powerful Python-based AI model. Instead of juggling various job platforms, the  web app scrapes job listings from these sites based on your profile and presents the most relevant opportunities directly to you.
 
-Key Features
+# Key Features
 User Profile Management: Seamlessly create and manage your profile, including job preferences and skills, to ensure the recommendations are tailored just for you.
 
 Resume Parsing: Effortlessly upload your resume, and let our AI models extract key information and skills. This ensures that the job recommendations align with your qualifications and experience.
