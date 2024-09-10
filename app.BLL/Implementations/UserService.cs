@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +12,10 @@ using app.BLL.Services;
 using app.DAL.Models;
 using app.DAL.Repository;
 using AutoMapper;
+using FluentAssertions.Common;
 using FluentValidation;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace app.BLL.Implementations
 {
@@ -54,8 +59,6 @@ namespace app.BLL.Implementations
                         passwordHash = passwordHash,
                         passwordSalt = passwordsalt,
                         verfificationToken = GenerateToken(),
-                     
-
                     };
                     await unitofWork.UserRepository.PostAsync(add_User);
                     await unitofWork.Save();
@@ -85,6 +88,33 @@ namespace app.BLL.Implementations
                 throw new NotFoundException($"User of this {id} could not be found");
             }
             return new ApiResponse(200, $"User of id= {id} deleted successfully", find_User);
+        }
+        public async Task<ApiResponse> LoginUser(UserLoginDTO userLoginDTO)
+        {
+            var search_User = await unitofWork.UserRepository.FindUserByEmail(userLoginDTO.email);
+            if (search_User == null)
+            {
+                throw new NotFoundException($"User of email= {userLoginDTO.email} could not be found");
+            }
+           
+            if (GetPasswordHash(userLoginDTO.password, search_User.passwordHash, search_User.passwordSalt))
+            {
+                var securitykey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("JWT").GetSection("SecretKey").Value));
+                var SigningCredentials = new SigningCredentials(securitykey, SecurityAlgorithms.HmacSha512);
+                var token = new JwtSecurityToken(
+                    issuer: Configuration.GetSection("JWT").GetSection("ValidIssuer").Value,
+                    audience: configuration.GetSection("JWT").GetSection("ValidAudience").Value,
+                    expires: DateTime.Now.AddMinutes(5),
+                    signingCredentials: SigningCredentials
+                    );
+                var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+                return new ApiResponse(201, "JWT Token generated successfully", tokenString);
+
+            }
+            else
+            {
+                throw new UnauthorizedAccessException();
+            }
         }
         public async Task<ApiResponse> UpdateUser(Guid id, UserDTO userDTO)
         {
@@ -127,16 +157,7 @@ namespace app.BLL.Implementations
             return token;
         }
 
-        public Task<ApiResponse> GetUserByEmail(string Email)
-        {
-            throw new NotImplementedException();
-        }
-
-        
-        public Task<ApiResponse> LoginUser(UserLoginDTO userLoginDTO)
-        {
-            throw new NotImplementedException();
-        }
+      
     }
 
 }
