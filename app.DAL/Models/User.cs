@@ -11,13 +11,12 @@ namespace app.DAL.Models
     {
         [Key]
         public Guid userId= Guid.NewGuid();
-        public Guid userProfileId { get; set; } 
         public UserProfile userProfile { get; set; }    
         public string userName { get; set; }  
         public string Email { get; set; }
         public byte[] passwordHash { get; set; }   
         public byte[] passwordSalt { get; set; }   
-        public string verfificationToken { get; set; }  
+        public Guid verfificationToken { get; set; }  
         public DateTime? verfiedAt { get; set; }    
         public ICollection<JobRecommendation>? jobRecommendations { get; set; }
         public ICollection<Skill>? skills { get; set; }

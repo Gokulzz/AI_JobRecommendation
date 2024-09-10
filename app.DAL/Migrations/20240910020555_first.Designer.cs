@@ -12,7 +12,7 @@ using app.DAL.Data;
 namespace app.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240903205741_first")]
+    [Migration("20240910020555_first")]
     partial class first
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -91,7 +91,7 @@ namespace app.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("JobRecommendation");
+                    b.ToTable("JobRecommendations");
                 });
 
             modelBuilder.Entity("app.DAL.Models.JobSkill", b =>
@@ -116,7 +116,7 @@ namespace app.DAL.Migrations
 
                     b.HasIndex("ScrapedJobId");
 
-                    b.ToTable("JobSkill");
+                    b.ToTable("JobSkills");
                 });
 
             modelBuilder.Entity("app.DAL.Models.Resume", b =>
@@ -151,7 +151,7 @@ namespace app.DAL.Migrations
 
                     b.HasKey("resumeId");
 
-                    b.ToTable("Resume");
+                    b.ToTable("Resumes");
                 });
 
             modelBuilder.Entity("app.DAL.Models.ResumeSkill", b =>
@@ -179,7 +179,7 @@ namespace app.DAL.Migrations
 
                     b.HasIndex("ResumeId");
 
-                    b.ToTable("ResumeSkill");
+                    b.ToTable("ResumeSkills");
                 });
 
             modelBuilder.Entity("app.DAL.Models.ScrapedJobs", b =>
@@ -255,7 +255,7 @@ namespace app.DAL.Migrations
 
                     b.HasKey("SkillId");
 
-                    b.ToTable("Skill");
+                    b.ToTable("Skills");
                 });
 
             modelBuilder.Entity("app.DAL.Models.User", b =>
@@ -280,19 +280,15 @@ namespace app.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("userProfileId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime?>("verfiedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("verfificationToken")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("verfificationToken")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("userId");
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("app.DAL.Models.UserActivity", b =>
@@ -318,12 +314,13 @@ namespace app.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserActivity");
+                    b.ToTable("UserActivities");
                 });
 
             modelBuilder.Entity("app.DAL.Models.UserProfile", b =>
                 {
-                    b.Property<Guid>("userId")
+                    b.Property<Guid>("profileId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Address")
@@ -358,12 +355,18 @@ namespace app.DAL.Migrations
                     b.Property<Guid>("resumeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("userId");
+                    b.Property<Guid>("userId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("profileId");
 
                     b.HasIndex("resumeId")
                         .IsUnique();
 
-                    b.ToTable("UserProfile");
+                    b.HasIndex("userId")
+                        .IsUnique();
+
+                    b.ToTable("UserProfiles");
                 });
 
             modelBuilder.Entity("app.DAL.Models.UserSkills", b =>

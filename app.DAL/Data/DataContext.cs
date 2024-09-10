@@ -21,7 +21,7 @@ namespace app.DAL.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasKey(x => x.userId);
-            modelBuilder.Entity<UserProfile>().HasKey(x => x.userId);
+            modelBuilder.Entity<UserProfile>().HasKey(x => x.profileId);
             modelBuilder.Entity<UserActivity>().HasKey(x => x.UserActivityId);
             modelBuilder.Entity<UserSkills>().HasKey(x => x.skillsId);
             modelBuilder.Entity<Resume>().HasKey(x => x.resumeId);
@@ -59,5 +59,16 @@ namespace app.DAL.Data
             
 
         }
+        public DbSet<User> Users { get; set; }
+        public DbSet<UserActivity> UserActivities { get; set; } 
+        public DbSet<UserProfile> UserProfiles { get; set; }
+        public DbSet<UserSkills> UserSkills { get; set; }
+        public DbSet<Skill> Skills { get; set; }    
+        public DbSet<Resume> Resumes { get; set; }
+        public DbSet<ResumeSkill> ResumeSkills { get; set; }
+        public DbSet<ScrapedJobs> ScrapedJobs { get; set; }
+        public DbSet<JobSkill> JobSkills { get; set; }
+        public DbSet<JobRecommendation> JobRecommendations { get; set; }
+        public DbSet<JobPreferences> JobPreferences { get; set; }   
     }
 }
