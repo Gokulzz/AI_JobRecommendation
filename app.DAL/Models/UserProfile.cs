@@ -9,6 +9,7 @@ namespace app.DAL.Models
 {
     public class UserProfile
     {
+        [Key]
         public Guid profileId= Guid.NewGuid();
         public Guid userId { get; set; }
         public User user { get; set; }  

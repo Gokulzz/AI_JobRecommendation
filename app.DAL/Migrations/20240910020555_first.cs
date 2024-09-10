@@ -10,7 +10,7 @@ namespace app.DAL.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Resume",
+                name: "Resumes",
                 columns: table => new
                 {
                     resumeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -24,7 +24,7 @@ namespace app.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Resume", x => x.resumeId);
+                    table.PrimaryKey("PK_Resumes", x => x.resumeId);
                 });
 
             migrationBuilder.CreateTable(
@@ -49,7 +49,7 @@ namespace app.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Skill",
+                name: "Skills",
                 columns: table => new
                 {
                     SkillId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -59,29 +59,28 @@ namespace app.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Skill", x => x.SkillId);
+                    table.PrimaryKey("PK_Skills", x => x.SkillId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "User",
+                name: "Users",
                 columns: table => new
                 {
                     userId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    userProfileId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     userName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     passwordHash = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     passwordSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    verfificationToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    verfificationToken = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     verfiedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.userId);
+                    table.PrimaryKey("PK_Users", x => x.userId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ResumeSkill",
+                name: "ResumeSkills",
                 columns: table => new
                 {
                     ResumeSkillId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -92,17 +91,17 @@ namespace app.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ResumeSkill", x => x.ResumeSkillId);
+                    table.PrimaryKey("PK_ResumeSkills", x => x.ResumeSkillId);
                     table.ForeignKey(
-                        name: "FK_ResumeSkill_Resume_ResumeId",
+                        name: "FK_ResumeSkills_Resumes_ResumeId",
                         column: x => x.ResumeId,
-                        principalTable: "Resume",
+                        principalTable: "Resumes",
                         principalColumn: "resumeId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "JobSkill",
+                name: "JobSkills",
                 columns: table => new
                 {
                     JobSkillId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -112,9 +111,9 @@ namespace app.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_JobSkill", x => x.JobSkillId);
+                    table.PrimaryKey("PK_JobSkills", x => x.JobSkillId);
                     table.ForeignKey(
-                        name: "FK_JobSkill_ScrapedJobs_ScrapedJobId",
+                        name: "FK_JobSkills_ScrapedJobs_ScrapedJobId",
                         column: x => x.ScrapedJobId,
                         principalTable: "ScrapedJobs",
                         principalColumn: "ScrapedJobId",
@@ -139,15 +138,15 @@ namespace app.DAL.Migrations
                 {
                     table.PrimaryKey("PK_JobPreferences", x => x.JobPreferencesId);
                     table.ForeignKey(
-                        name: "FK_JobPreferences_User_UserId",
+                        name: "FK_JobPreferences_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "userId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "JobRecommendation",
+                name: "JobRecommendations",
                 columns: table => new
                 {
                     JobRecommendationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -158,23 +157,23 @@ namespace app.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_JobRecommendation", x => x.JobRecommendationId);
+                    table.PrimaryKey("PK_JobRecommendations", x => x.JobRecommendationId);
                     table.ForeignKey(
-                        name: "FK_JobRecommendation_ScrapedJobs_ScrapedJobId",
+                        name: "FK_JobRecommendations_ScrapedJobs_ScrapedJobId",
                         column: x => x.ScrapedJobId,
                         principalTable: "ScrapedJobs",
                         principalColumn: "ScrapedJobId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_JobRecommendation_User_UserId",
+                        name: "FK_JobRecommendations_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "userId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserActivity",
+                name: "UserActivities",
                 columns: table => new
                 {
                     UserActivityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -185,19 +184,20 @@ namespace app.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserActivity", x => x.UserActivityId);
+                    table.PrimaryKey("PK_UserActivities", x => x.UserActivityId);
                     table.ForeignKey(
-                        name: "FK_UserActivity_User_UserId",
+                        name: "FK_UserActivities_Users_UserId",
                         column: x => x.UserId,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "userId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserProfile",
+                name: "UserProfiles",
                 columns: table => new
                 {
+                    profileId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     userId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     firstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     lastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -211,17 +211,17 @@ namespace app.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserProfile", x => x.userId);
+                    table.PrimaryKey("PK_UserProfiles", x => x.profileId);
                     table.ForeignKey(
-                        name: "FK_UserProfile_Resume_resumeId",
+                        name: "FK_UserProfiles_Resumes_resumeId",
                         column: x => x.resumeId,
-                        principalTable: "Resume",
+                        principalTable: "Resumes",
                         principalColumn: "resumeId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserProfile_User_userId",
+                        name: "FK_UserProfiles_Users_userId",
                         column: x => x.userId,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "userId",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -238,15 +238,15 @@ namespace app.DAL.Migrations
                 {
                     table.PrimaryKey("PK_UserSkills", x => x.skillsId);
                     table.ForeignKey(
-                        name: "FK_UserSkills_Skill_skillsSkillId",
+                        name: "FK_UserSkills_Skills_skillsSkillId",
                         column: x => x.skillsSkillId,
-                        principalTable: "Skill",
+                        principalTable: "Skills",
                         principalColumn: "SkillId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserSkills_User_userId",
+                        name: "FK_UserSkills_Users_userId",
                         column: x => x.userId,
-                        principalTable: "User",
+                        principalTable: "Users",
                         principalColumn: "userId",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -257,34 +257,40 @@ namespace app.DAL.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_JobRecommendation_ScrapedJobId",
-                table: "JobRecommendation",
+                name: "IX_JobRecommendations_ScrapedJobId",
+                table: "JobRecommendations",
                 column: "ScrapedJobId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_JobRecommendation_UserId",
-                table: "JobRecommendation",
+                name: "IX_JobRecommendations_UserId",
+                table: "JobRecommendations",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_JobSkill_ScrapedJobId",
-                table: "JobSkill",
+                name: "IX_JobSkills_ScrapedJobId",
+                table: "JobSkills",
                 column: "ScrapedJobId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ResumeSkill_ResumeId",
-                table: "ResumeSkill",
+                name: "IX_ResumeSkills_ResumeId",
+                table: "ResumeSkills",
                 column: "ResumeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserActivity_UserId",
-                table: "UserActivity",
+                name: "IX_UserActivities_UserId",
+                table: "UserActivities",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserProfile_resumeId",
-                table: "UserProfile",
+                name: "IX_UserProfiles_resumeId",
+                table: "UserProfiles",
                 column: "resumeId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserProfiles_userId",
+                table: "UserProfiles",
+                column: "userId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -304,19 +310,19 @@ namespace app.DAL.Migrations
                 name: "JobPreferences");
 
             migrationBuilder.DropTable(
-                name: "JobRecommendation");
+                name: "JobRecommendations");
 
             migrationBuilder.DropTable(
-                name: "JobSkill");
+                name: "JobSkills");
 
             migrationBuilder.DropTable(
-                name: "ResumeSkill");
+                name: "ResumeSkills");
 
             migrationBuilder.DropTable(
-                name: "UserActivity");
+                name: "UserActivities");
 
             migrationBuilder.DropTable(
-                name: "UserProfile");
+                name: "UserProfiles");
 
             migrationBuilder.DropTable(
                 name: "UserSkills");
@@ -325,13 +331,13 @@ namespace app.DAL.Migrations
                 name: "ScrapedJobs");
 
             migrationBuilder.DropTable(
-                name: "Resume");
+                name: "Resumes");
 
             migrationBuilder.DropTable(
-                name: "Skill");
+                name: "Skills");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "Users");
         }
     }
 }
