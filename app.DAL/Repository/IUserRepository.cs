@@ -11,5 +11,6 @@ namespace app.DAL.Repository
     public interface IUserRepository : IGenericRepository<User>
     {
         public Task<User> VerifyUser(Guid token);
+        public Task<User> FindUserByEmail(string email);
     }
 }

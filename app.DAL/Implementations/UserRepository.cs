@@ -22,5 +22,10 @@ namespace app.DAL.Implementations
             return search_token;
 
         }
+        public async Task<User> FindUserByEmail(string email)
+        {
+            var find_email= await dataContext.Users.Where(x=>x.Email==email).FirstOrDefaultAsync();
+            return find_email;
+        }
     }
 }
