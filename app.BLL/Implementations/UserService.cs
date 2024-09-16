@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -22,13 +23,15 @@ namespace app.BLL.Implementations
     public class UserService : IUserService
     {
         private readonly IUnitofWork unitofWork;
-        private readonly IMapper mapper;
+        private readonly IEmailSenderService emailSenderService;
         private readonly IValidator<UserDTO> validator;
-        public UserService(IUnitofWork unitofWork, IMapper mapper, IValidator<UserDTO> validator)
+        private readonly IConfiguration configuration;  
+        public UserService(IUnitofWork unitofWork, IValidator<UserDTO> validator, IConfiguration configuration, IEmailSenderService emailSenderService)
         {
             this.unitofWork = unitofWork;
-            this.mapper = mapper;
             this.validator = validator;
+            this.configuration = configuration;
+            this.emailSenderService = emailSenderService;   
         }
         public async Task<ApiResponse> GetAllUser()
         {
@@ -62,8 +65,8 @@ namespace app.BLL.Implementations
                     };
                     await unitofWork.UserRepository.PostAsync(add_User);
                     await unitofWork.Save();
-                    //var message = new MessageDTO(new string[] { userDTO.Email }, "Please enter this verification token to register", add_User.VerificationToken.ToString());
-                    //await emailSenderService.SendEmailAsync(message);
+                    var message = new MessageDTO(new string[] { userDTO.Email }, "Please enter this verification token to register", add_User.verfificationToken.ToString());
+                    await emailSenderService.SendEmailAsync(message);
                     return new ApiResponse(200, "Need to enter the verification token send to your email to complete the process of Registration", add_User);
                 }
                 else
@@ -102,7 +105,7 @@ namespace app.BLL.Implementations
                 var securitykey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("JWT").GetSection("SecretKey").Value));
                 var SigningCredentials = new SigningCredentials(securitykey, SecurityAlgorithms.HmacSha512);
                 var token = new JwtSecurityToken(
-                    issuer: Configuration.GetSection("JWT").GetSection("ValidIssuer").Value,
+                    issuer: configuration.GetSection("JWT").GetSection("ValidIssuer").Value,
                     audience: configuration.GetSection("JWT").GetSection("ValidAudience").Value,
                     expires: DateTime.Now.AddMinutes(5),
                     signingCredentials: SigningCredentials
@@ -116,10 +119,20 @@ namespace app.BLL.Implementations
                 throw new UnauthorizedAccessException();
             }
         }
+        public async Task<ApiResponse> GetUserByEmail(string email)
+        {
+            var user= await unitofWork.UserRepository.FindUserByEmail(email);
+            if(string.IsNullOrEmpty(user.ToString()))
+            {
+                throw new NotFoundException($"User of this email could not be found");
+            }
+            return new ApiResponse(200, $"user of {email} returned successfully", user);
+        }
         public async Task<ApiResponse> UpdateUser(Guid id, UserDTO userDTO)
         {
             throw new NotImplementedException();
         }
+       
         public async Task<ApiResponse> VerifyUser(Guid Token)
         {
 

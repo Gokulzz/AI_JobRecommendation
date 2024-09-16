@@ -1,8 +1,12 @@
 using System.Security.Claims;
 using System.Text;
+using app.BLL.DTO;
+using app.BLL.Services;
 using app.DAL.Data;
+using ConfigureManager.cs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -21,12 +25,19 @@ try
     builder.Logging.ClearProviders();
     builder.Logging.AddSerilog(logger);
     logger.Information("App starting");
-
+    //we will bind the properties of emailconfiguration properties from our appsettings.json to type emailconfiguration which is our DTO
+    //for email Configuration
+    var emailConfig = builder.Configuration
+        .GetSection("EmailConfiguration")
+        .Get<EmailConfigurationDTO>();
+    builder.Services.AddSingleton(emailConfig);
+    //builder.Services.Configure<EmailConfigurationDTO>(builder.Configuration.GetSection("EmailConfiguration"));
     // Add services to the container.
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
+    builder.Services.ConfigureDependency();
     builder.Services.AddDbContext<DataContext>(options =>
     {
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -97,14 +108,15 @@ try
     app.UseHttpsRedirection();
 
     app.UseAuthorization();
+    app.UseAuthentication();
 
     app.MapControllers();
-
+    app.UseCors("AllowAll");
     app.Run();
 }
 catch(Exception ex)
 {
-    Log.Error(ex.ToString());
+    Console.Write(ex.ToString());   
 }
 finally
 {
