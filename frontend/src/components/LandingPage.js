@@ -1,9 +1,16 @@
 import React from 'react';
+import { Link, useNavigate } from 'react-router-dom'; 
 import Button from './ui/button.js';
 import { Card, CardContent } from './ui/card.js';
 import { Briefcase, Zap, Target } from 'lucide-react';
 
 const LandingPage = () => {
+  const navigate = useNavigate(); // Initialize the navigate hook
+
+  const handleGetStartedClick = () => {
+    navigate('/login'); // Navigate to the login page when button is clicked
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-100 to-white">
       {/* Header */}
@@ -20,7 +27,11 @@ const LandingPage = () => {
           <p className="text-xl text-gray-600 mb-8">
             Let our advanced AI algorithm match you with the perfect job opportunities.
           </p>
-          <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg shadow-lg">
+          <Button 
+            size="lg" 
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg shadow-lg"
+            onClick={handleGetStartedClick} // Add the click handler
+          >
             Get Started
           </Button>
         </section>
@@ -61,9 +72,11 @@ const LandingPage = () => {
         {/* Call to Action Section */}
         <section className="text-center py-16 bg-gray-50">
           <h2 className="text-4xl font-bold mb-6 text-gray-900">Ready to Boost Your Career?</h2>
-          <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg shadow-lg">
-            Sign Up Now
-          </Button>
+          <Link to="/register">
+            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg shadow-lg">
+              Sign Up Now
+            </Button>
+          </Link>
         </section>
       </main>
 
