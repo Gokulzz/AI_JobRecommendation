@@ -22,6 +22,7 @@ namespace ConfigureManager.cs
         public static void ConfigureDependency(this IServiceCollection services)
         {
             services.AddScoped<DataContext>();
+            services.AddHttpContextAccessor();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IUserRepository, UserRepository>();  
             services.AddScoped<IUserSkillsRepository, UserSkillsRepository>();
@@ -37,13 +38,11 @@ namespace ConfigureManager.cs
             services.AddScoped<IJobPreferencesRepository, JobPreferencesRepository>();
             services.AddScoped<IUnitofWork, UnitofWork>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserProfileService, UserProfileService>();
             services.AddScoped<IEmailSenderService, EmailSenderService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddValidatorsFromAssemblyContaining<UserValidator>();
            
-            
-
-
         }
 
 

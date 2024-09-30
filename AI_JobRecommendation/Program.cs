@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using System.Text;
+using app.BLL;
 using app.BLL.DTO;
 using app.BLL.Services;
 using app.DAL.Data;
@@ -92,6 +93,15 @@ try
             };
 
         });
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowAll", builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+    });
 
     var app = builder.Build();
 
@@ -104,11 +114,13 @@ try
             options.SwaggerEndpoint("/swagger/V1/swagger.json", "AIJobRecommendationApp WebAPI");
         });
     }
+    app.UseExceptionMiddleware();
 
     app.UseHttpsRedirection();
 
-    app.UseAuthorization();
+  
     app.UseAuthentication();
+    app.UseAuthorization();
 
     app.MapControllers();
     app.UseCors("AllowAll");

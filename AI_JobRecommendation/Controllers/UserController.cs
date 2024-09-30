@@ -22,7 +22,7 @@ namespace AI_JobRecommendation.Controllers
         return getUser;
     }
     [HttpGet("GetByEmail")]
-    public async Task<ApiResponse> GetByEmail(string email)
+    public async Task<IActionResult> GetByEmail(string email)
     {
         var user = await UserService.GetUserByEmail(email);
         return user;
@@ -34,6 +34,7 @@ namespace AI_JobRecommendation.Controllers
         var getUsers = await UserService.GetAllUser();
         return getUsers;
     }
+
     [HttpPost("AddUser")]
     public async Task<ApiResponse> AddUser([FromBody] UserDTO user)
     {

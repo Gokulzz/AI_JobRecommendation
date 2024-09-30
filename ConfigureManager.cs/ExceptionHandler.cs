@@ -52,7 +52,7 @@ namespace app.BLL
                 statusCode = (int)HttpStatusCode.BadRequest;
                 message = ex.Message;
             }
-            else if (exception == typeof(UnauthorizedAccessException))
+            else if (exception == typeof(NotAuthorizedException))
             {
                 statusCode = (int)HttpStatusCode.Unauthorized;
                 message = ex.Message;
