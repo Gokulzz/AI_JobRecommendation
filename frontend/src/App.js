@@ -5,6 +5,7 @@ import RegistrationPage from './components/RegistrationPage';
 import VerificationPage from './components/VerificationPage'; 
 import LoginPage  from './components/LoginPage';  
 import DashBoardPage from './components/DashboardPage';
+import ProfilePage  from './components/ProfilePage';
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
         <Route path="/verify" element={<VerificationPage />} /> {/* Add this line */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/dashboard" element={<DashBoardPage/>} />
+        <Route path="/create-profile" element={<ProfilePage/>} />
         
       </Routes>
     </Router>
