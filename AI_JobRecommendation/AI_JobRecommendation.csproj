@@ -25,10 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\app.BLL\app.BLL.csproj" />
     <ProjectReference Include="..\ConfigureManager.cs\ConfigureManager.cs.csproj" />
   </ItemGroup>

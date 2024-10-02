@@ -21,7 +21,7 @@ namespace app.DAL.Models
         public string? currentCompany { get; set; } 
         public string Address { get; set; }
         public DateTime? ProfileCreatedAt { get; set; } 
-        public Guid resumeId { get; set; }  
+        public Guid? resumeId { get; set; }  
         public Resume resume { get; set; }  
         
         
