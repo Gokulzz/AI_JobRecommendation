@@ -12,8 +12,6 @@ namespace app.DAL.Models
         [Key]
         public Guid SkillId=Guid.NewGuid();
 
-        
-
         [Required]
         [MaxLength(100)]
         public string SkillName { get; set; } 

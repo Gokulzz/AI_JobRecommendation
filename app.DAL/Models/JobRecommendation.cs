@@ -15,15 +15,11 @@ namespace app.DAL.Models
 
         public Guid UserId { get; set; }
         public User User { get; set; }
-
-
         public Guid ScrapedJobId { get; set; }
         public ScrapedJobs ScrapedJob { get; set; }
-
         public DateTime RecommendationDate { get; set; }  
 
-       
-        [MaxLength(1000)]
+       [MaxLength(1000)]
         public string? Notes { get; set; }
     }
 }
