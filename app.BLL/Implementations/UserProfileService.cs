@@ -55,9 +55,29 @@ namespace app.BLL.Implementations
                     Address = profileDTO.Address,
                     ProfileCreatedAt = DateTime.Now
                 };
+                var addJobPreferences = new JobPreferences()
+                {
+                    UserId = userService.GetCurrentId(),
+                    PreferredJobTitle = profileDTO.PreferredJobTitle,
+                    PreferredLocation = profileDTO.PreferredLocation
+                };
                 await unitofWork.UserProfileRepository.PostAsync(addUserProfile);
+                await unitofWork.JobPreferencesRepository.PostAsync(addJobPreferences);
                 await unitofWork.Save();
                 return new ApiResponse(200, "User added successfully", addUserProfile);
+            }
+            catch (Exception ex)
+            {
+                throw new BadRequestException(ex.Message);
+            }
+        }
+        public async Task<ApiResponse> GetJobPreferences()
+        {
+            try
+            {
+                var userId=  userService.GetCurrentId();
+                var get_Data= await unitofWork.JobPreferencesRepository.GetTitleAndLocation(userId);
+                return new ApiResponse(200, "Title and location returned successfully", get_Data);
             }
             catch (Exception ex)
             {

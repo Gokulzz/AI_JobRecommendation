@@ -9,5 +9,6 @@ namespace app.DAL.Repository
 {
     public interface IJobPreferencesRepository : IGenericRepository<JobPreferences>
     {
+        public Task<JobPreferences?> GetTitleAndLocation(Guid userId);
     }
 }

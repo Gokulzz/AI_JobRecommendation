@@ -15,6 +15,10 @@ namespace app.BLL.DTO
         public string? currentJobTitle { get; set; }
         public string? currentCompany { get; set; }
         public string Address { get; set; }
+        public string PreferredJobTitle { get; set; }    
+        public string PreferredLocation { get; set; }    
+      
+        
       
     }
 }

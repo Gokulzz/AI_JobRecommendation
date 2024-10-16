@@ -29,4 +29,8 @@
     <ProjectReference Include="..\ConfigureManager.cs\ConfigureManager.cs.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Resumes\" />
+  </ItemGroup>
+
 </Project>
