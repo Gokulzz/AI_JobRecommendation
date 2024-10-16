@@ -25,7 +25,7 @@ const LandingPage = () => {
         <section className="text-center py-20">
           <h2 className="text-5xl font-bold mb-6 text-gray-900">Find Your Dream Job with AI</h2>
           <p className="text-xl text-gray-600 mb-8">
-            Let our advanced AI algorithm match you with the perfect job opportunities.
+            Let our AI algorithm match you with the perfect job opportunities.
           </p>
           <Button 
             size="lg" 
