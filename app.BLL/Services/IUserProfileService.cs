@@ -10,6 +10,8 @@ namespace app.BLL.Services
     public interface IUserProfileService
     {
         public Task<ApiResponse> GetAllUserProfile();
+        public Task<ApiResponse> GetUserProfileByUserId();   
+       
         public Task<ApiResponse> GetUserProfileById(Guid Id);
         public Task<ApiResponse> AddUserProfile(UserProfileDTO userDTO);
         public Task<ApiResponse> GetJobPreferences();

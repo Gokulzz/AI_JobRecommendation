@@ -33,7 +33,7 @@ namespace app.BLL.Implementations
         {
             try
             {
-                var get_Resume= await unitofWork.ResumeRepository.GetAsync(id);
+                var get_Resume= await unitofWork.ResumeSkillRepository.GetResumeSkills(id); 
                 if(get_Resume == null)
                 {
                     throw new NotFoundException("Could not find resume");
@@ -45,6 +45,7 @@ namespace app.BLL.Implementations
                 throw new Exception(ex.Message, ex);
             }
         }
+       
         public async Task<ApiResponse> AddResume(ResumeDTO resume)
         {
             try
@@ -61,6 +62,7 @@ namespace app.BLL.Implementations
                 var parsedFields = ExtractFieldsFromText(fullPath);
                 var parsed_Summary = parsedFields.ContainsKey("Summary") ? parsedFields["Summary"] : "Not provided";
                 var parsed_Education = parsedFields.ContainsKey("Education") ? parsedFields["Education"] : "Not provided";
+                var parsed_Skills = parsedFields.ContainsKey("Skills") ? parsedFields["Skills"] : "Not provided";
  
                 var add_Resume = new Resume()
                 {
@@ -72,8 +74,14 @@ namespace app.BLL.Implementations
                     workExperience = "NA",
                     certifications = "NA"
                 };
+                var resumeSkills = new ResumeSkill()
+                {
+                    ResumeId = add_Resume.resumeId,
+                    SkillName = parsed_Skills
+                };
                 await unitofWork.ResumeRepository.PostAsync(add_Resume);
                 await Update_UserProfile(userProfileId, add_Resume.resumeId);
+                await unitofWork.ResumeSkillRepository.PostAsync(resumeSkills);
                 await unitofWork.Save();
                 return new ApiResponse(200, "Resume uploaded successfully", add_Resume);
             }
@@ -120,7 +128,7 @@ namespace app.BLL.Implementations
             // Adjust regex to match "EXPERIENCE" case-sensitive
             var summaryMatch = Regex.Match(fullText, @"SUMMARY\s*(.*?)\s*(?=(?:EXPERIENCE\b|EDUCATION\b|CERTIFICATIONS\b|PROJECTS\b|SKILLS\b|$))", RegexOptions.Singleline);
             var educationMatch = Regex.Match(fullText, @"EDUCATION\s*(.*?)\s*(?=(?:CERTIFICATIONS|EXPERIENCE|$))", RegexOptions.Singleline);
-
+            var skillsMatch = Regex.Match(fullText, @"SKILLS\s*(.*?)\s*(?=(?:CERTIFICATIONS\b|PROJECTS\b|EXPERIENCE\b|EDUCATION\b|$))", RegexOptions.Singleline);
             if (summaryMatch.Success)
             {
                 // Clean extracted summary text
@@ -131,6 +139,10 @@ namespace app.BLL.Implementations
             {
                 // Clean extracted education text
                 fields["Education"] = Regex.Replace(educationMatch.Groups[1].Value.Trim(), @"\s+", " ");
+            }
+            if (skillsMatch.Success)
+            {
+                fields["Skills"] = Regex.Replace(skillsMatch.Groups[1].Value.Trim(), @"\s+", " ");
             }
 
             return fields;

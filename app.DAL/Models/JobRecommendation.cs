@@ -21,5 +21,9 @@ namespace app.DAL.Models
 
        [MaxLength(1000)]
         public string? Notes { get; set; }
+        public double relevanceScore { get; set; } 
+        public bool isViewed { get; set; }  
+        public bool isApplied { get; set; }
+        public int priorityLevel { get; set; }  
     }
 }

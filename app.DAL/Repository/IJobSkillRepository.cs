@@ -9,5 +9,6 @@ namespace app.DAL.Repository
 {
     public interface IJobSkillRepository : IGenericRepository<JobSkill>
     {
+        public Task<List<JobSkill>> GetAllJobSkills();
     }
 }

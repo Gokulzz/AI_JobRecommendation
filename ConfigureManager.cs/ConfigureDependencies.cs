@@ -42,8 +42,12 @@ namespace ConfigureManager.cs
             services.AddScoped<IUserProfileService, UserProfileService>();
             services.AddScoped<IEmailSenderService, EmailSenderService>();
             services.AddScoped<IResumeService, ResumeService>(); 
-            services.AddScoped<IJobScrapService, JobScrapService>();    
+            services.AddScoped<IJobScrapService, JobScrapService>();  
+            services.AddScoped<IJobRecommendationService, JobRecommendationService>();
+            services.AddScoped<ICleanUpOldJobsRepository, JobRecommendationsRepository>();
+            services.AddScoped<ICleanUpOldJobsRepository, ScrapedJobsRepository>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddHostedService<RemoveOldJobService>();
             services.AddHttpClient();
             services.AddValidatorsFromAssemblyContaining<UserValidator>();
             services.AddControllers().AddJsonOptions(x =>

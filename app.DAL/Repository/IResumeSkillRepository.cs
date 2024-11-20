@@ -9,5 +9,6 @@ namespace app.DAL.Repository
 {
     public interface IResumeSkillRepository : IGenericRepository<ResumeSkill>
     {
+        public Task<List<string>> GetResumeSkills(Guid? resumeId);
     }
 }

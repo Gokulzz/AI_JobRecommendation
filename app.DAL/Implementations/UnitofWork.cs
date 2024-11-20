@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using app.DAL.Data;
+using app.DAL.Models;
 using app.DAL.Repository;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace app.DAL.Implementations
@@ -25,6 +28,7 @@ namespace app.DAL.Implementations
         public IJobPreferencesRepository JobPreferencesRepository { get; }
         public IScrapedJobsRepository ScrapedJobsRepository { get; }
         public IJobRecommendationsRepository JobRecommendationsRepository { get; }
+      
         public UnitofWork(IServiceScopeFactory serviceScopeFactory)
         {
             _serviceScopeFactory = serviceScopeFactory;
@@ -48,6 +52,30 @@ namespace app.DAL.Implementations
         {
             await _context.SaveChangesAsync();  
         }
+        public async Task<List<string>> GetParsedResumeSkills(Guid userId)
+        {
+            var resumeSkillsString = await (from resumeSkill in _context.ResumeSkills
+                                            join resume in _context.Resumes on resumeSkill.ResumeId equals resume.resumeId
+                                            join userProfile in _context.UserProfiles on resume.userProfileId equals userProfile.profileId
+                                            join user in _context.Users on userProfile.userId equals user.userId
+                                            where user.userId == userId
+                                            select resumeSkill.SkillName).FirstOrDefaultAsync();
+            //if null return a empty list of string
+            if (string.IsNullOrEmpty(resumeSkillsString))
+            {
+                return new List<string>();
+            }
+
+            // Split string by common delimiters
+            var skills = resumeSkillsString
+                         .Split(new[] { ',', ';', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                         .Select(skill => skill.Trim())
+                         .Where(skill => !string.IsNullOrWhiteSpace(skill))
+                         .ToList();
+
+            return skills;
+        }
+
         public void Dispose()
         {
             _scope.Dispose();

@@ -9,6 +9,7 @@ namespace app.DAL.Repository
 {
     public interface IScrapedJobsRepository : IGenericRepository<ScrapedJobs>
     {
+        public Task<List<ScrapedJobs>> GetScrapedJobswithSkills();
 
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AI_JobRecommendation.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class UserResumeController : Controller
     {
         private readonly IResumeService resumeService;
