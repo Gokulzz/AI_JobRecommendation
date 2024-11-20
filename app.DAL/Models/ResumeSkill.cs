@@ -18,7 +18,7 @@ namespace app.DAL.Models
         public Resume Resume { get; set; }
 
         [Required]
-        [MaxLength(100)]
+        [MaxLength(1000)]
         public string SkillName { get; set; }  
 
         [MaxLength(50)]

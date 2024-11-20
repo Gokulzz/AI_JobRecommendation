@@ -18,11 +18,22 @@ namespace app.BLL.Implementations
         private readonly HttpClient _httpClient;
         private readonly IUnitofWork _unitofWork;
         private readonly IUserService _userService;
+
         public JobScrapService(HttpClient httpClient, IUnitofWork unitofWork, IUserService userService)
         {
+            httpClient.Timeout = TimeSpan.FromSeconds(120);
             _httpClient = httpClient;
             _unitofWork = unitofWork;
             _userService = userService;
+        }
+        public async Task<ApiResponse> GetScrapJobs()
+        {
+            var get_ScrapedJobs = await _unitofWork.ScrapedJobsRepository.GetScrapedJobswithSkills();
+            if(get_ScrapedJobs==null)
+            {
+                throw new NotFoundException("Scraped jobs could not be found in the system");
+            }
+            return new ApiResponse(200, "Scraped Jobs returned successfully", get_ScrapedJobs);
         }
 
         public async Task<ApiResponse> ScrapJobs(JobPreferencesDTO jobPreferencesDTO)
@@ -38,13 +49,15 @@ namespace app.BLL.Implementations
 
             if (!response.IsSuccessStatusCode)
             {
-               return new ApiResponse((int)response.StatusCode, "Error while scraping jobs", await response.Content.ReadAsStringAsync());
+                return new ApiResponse((int)response.StatusCode, "Error while scraping jobs", await response.Content.ReadAsStringAsync());
             }
-            //raw json
+
             var jobLinksJson = await response.Content.ReadAsStringAsync();
-            //add each job to scrapedJobs for structured response
+            Console.WriteLine(jobLinksJson); // Log the JSON to check its structure
+
             var scrapedJobs = new List<ScrapedJobs>();
-            var recommendations= new List<JobRecommendation>(); 
+            var recommendations = new List<JobRecommendation>();
+
             foreach (var line in jobLinksJson.Split('\n'))
             {
                 if (!string.IsNullOrWhiteSpace(line))
@@ -52,8 +65,10 @@ namespace app.BLL.Implementations
                     try
                     {
                         var jobResponse = JsonSerializer.Deserialize<ScrapedJobs>(line);
+
                         if (jobResponse != null)
                         {
+                            // Create a new ScrapedJobs object
                             var job = new ScrapedJobs
                             {
                                 Title = jobResponse.Title,
@@ -62,16 +77,28 @@ namespace app.BLL.Implementations
                                 SourceUrl = jobResponse.SourceUrl ?? "Unknown",
                                 ScrapedDate = DateTime.Now
                             };
-                            scrapedJobs.Add(job);
-                            //await _unitofWork.ScrapedJobsRepository.PostAsync(job);
-                            var recommendation = new JobRecommendation()
+                            await _unitofWork.ScrapedJobsRepository.PostAsync(job);
+
+                            // Map job skills from jobResponse to the jobSkill object
+                            job.jobSkills = jobResponse.jobSkills.Select(skillName => new JobSkill()
                             {
-                                UserId = _userService.GetCurrentId(),
-                                ScrapedJobId = job.ScrapedJobId,
-                                RecommendationDate = DateTime.Now
-                            };
-                            recommendations.Add(recommendation);
-                            //await _unitofWork.JobRecommendationsRepository.PostAsync(recommendation);
+                                SkillName = skillName.SkillName,
+                                ScrapedJobId = job.ScrapedJobId
+                            }
+                            ).ToList();
+                            scrapedJobs.Add(job);
+                            await _unitofWork.JobSkillRepository.PostMultiple(job.jobSkills.ToList());
+                            
+
+                        //    // Create job recommendations
+                        //    var recommendation = new JobRecommendation()
+                        //    {
+                        //        UserId = _userService.GetCurrentId(),
+                        //        ScrapedJobId = job.ScrapedJobId,
+                        //        RecommendationDate = DateTime.Now
+                        //    };
+                        //    recommendations.Add(recommendation);
+                        //    await _unitofWork.JobRecommendationsRepository.PostAsync(recommendation);
                         }
                     }
                     catch (JsonException ex)
@@ -80,11 +107,8 @@ namespace app.BLL.Implementations
                     }
                 }
             }
-             //await _unitofWork.Save();
-            return new ApiResponse(200, "Scraped jobs returned successfully", scrapedJobs);
+             await _unitofWork.Save(); // Save all changes to the database
+             return new ApiResponse(200, "Scraped jobs returned successfully", scrapedJobs);
         }
-
     }
-
 }
-

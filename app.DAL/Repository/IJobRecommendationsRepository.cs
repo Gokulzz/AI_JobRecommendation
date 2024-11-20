@@ -9,5 +9,7 @@ namespace app.DAL.Repository
 {
     public interface IJobRecommendationsRepository : IGenericRepository<JobRecommendation>
     {
+        public Task<List<JobRecommendation>> GetJobRecommendation(Guid userId);
+      
     }
 }

@@ -22,6 +22,7 @@ namespace app.BLL.Implementations
             this.unitofWork = unitofWork;
             this.userService = userService;
         }
+        
         public async Task<ApiResponse> GetAllUserProfile()
         {
             var userProfiles = await unitofWork.UserProfileRepository.GetAllAsync();
@@ -31,6 +32,16 @@ namespace app.BLL.Implementations
             }
             return new ApiResponse(200, "User Profiles displayed successfully", userProfiles);
         }
+        public async Task<ApiResponse> GetUserProfileByUserId()
+        {
+            var userId= userService.GetCurrentId();
+            var userProfileId= await unitofWork.UserProfileRepository.GetUserProfileId(userId);
+            if(userProfileId==Guid.Empty)
+            {
+                throw new NotFoundException($"User of this {userProfileId} does not exist");
+            }
+            return new ApiResponse(200, $"USER__PROFILE_ID of this {userProfileId} returned successfully", userProfileId);
+        }
         public async Task<ApiResponse> GetUserProfileById(Guid profileId)
         {
             var userProfileId = await unitofWork.UserProfileRepository.GetAsync(profileId);
@@ -38,7 +49,7 @@ namespace app.BLL.Implementations
             {
                 throw new NotFoundException($"User of this {profileId} does not exist");
             }
-            return new ApiResponse(200, $"User of this {profileId} does not exist.", userProfileId);
+            return new ApiResponse(200, $"User of this {profileId} returned successfully.", userProfileId);
         }
         public async Task<ApiResponse> AddUserProfile(UserProfileDTO profileDTO)
         {
