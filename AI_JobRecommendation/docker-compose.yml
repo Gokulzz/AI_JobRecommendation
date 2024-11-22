@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  flask:
+    build:
+      context: ./pythonFolder  # Set the build context to pythonFolder
+      dockerfile: Dockerfile.Flask   # Refer to the Dockerfile for Flask in pythonFolder
+    container_name: flask_app
+    ports:
+      - "6000:6000"
+    depends_on:
+      - redis
+
+  celery:
+    build:
+      context: ./pythonFolder  # Set the build context to pythonFolder
+      dockerfile: Dockerfile.Celery  # Refer to the Dockerfile for Celery in pythonFolder
+    container_name: celery_worker
+    depends_on:
+      - redis
+      - flask
+
+  redis:
+    image: "redis:alpine"
+    container_name: redis
+    ports:
+      - "6379:6379"

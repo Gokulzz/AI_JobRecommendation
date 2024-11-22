@@ -1,0 +1,14 @@
+# Use a Python base image
+FROM python:3.9-slim
+
+# Set the working directory inside the container to /app
+WORKDIR /app
+
+# Copy the contents of your local pythonFolder to the container's /app folder
+COPY . /app
+
+# Install dependencies 
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Command to run the Celery worker
+CMD ["celery", "-A", "trainModel", "worker", "--loglevel=info"]

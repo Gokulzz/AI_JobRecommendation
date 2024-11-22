@@ -1,0 +1,17 @@
+# Use a Python base image
+FROM python:3.9-slim
+
+# Set the working directory inside the container to /app
+WORKDIR /app
+
+# Copy the contents of local pythonFolder to the container's /app folder
+COPY . /app
+
+# Install dependencies 
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expose the port
+EXPOSE 6000
+
+# Command to run  Flask app
+CMD ["python", "relevance_Score_Calculator.py"]

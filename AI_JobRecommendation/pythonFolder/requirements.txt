@@ -1,0 +1,6 @@
+flask
+celery
+redis
+scikit-learn
+numpy
+
