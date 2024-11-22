@@ -21,6 +21,18 @@ namespace AI_JobRecommendation.Controllers
             var getUser = await userProfileService.GetUserProfileById(id);
             return getUser;
         }
+        [HttpGet("GetUserProfileByUserId")]
+        public async Task<ApiResponse> GetUserProfileByUserId()
+        {
+            var getUserProfileId = await userProfileService.GetUserProfileByUserId();
+            return getUserProfileId;
+        }
+        [HttpGet("GetTitleAndLocation")]
+        public async Task<ApiResponse> GetTitleAndLocation()
+        {
+            var getResult= await userProfileService.GetJobPreferences();
+            return getResult;   
+        }
         [HttpGet("GetAllProfiles")]
         public async Task<ApiResponse> GetAllProfiles()
         {

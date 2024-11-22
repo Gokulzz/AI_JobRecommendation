@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using app.DAL.Data;
 
@@ -11,9 +12,10 @@ using app.DAL.Data;
 namespace app.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20241010051813_increaseColumnSize")]
+    partial class increaseColumnSize
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,18 +84,6 @@ namespace app.DAL.Migrations
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("isApplied")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("isViewed")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("priorityLevel")
-                        .HasColumnType("int");
-
-                    b.Property<double>("relevanceScore")
-                        .HasColumnType("float");
 
                     b.HasKey("JobRecommendationId");
 
@@ -179,8 +169,8 @@ namespace app.DAL.Migrations
 
                     b.Property<string>("SkillName")
                         .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int?>("YearsOfExperience")
                         .HasColumnType("int");

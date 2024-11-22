@@ -7,15 +7,14 @@ import { Briefcase, Search } from 'lucide-react';
 const JobDashboard = () => {
   const navigate = useNavigate();
 
-  const handleJobDetails = (jobId) => {
-    // Navigate to the Job Details page for the selected job
-    navigate(`/job/${jobId}`);
-  };
-
   const handleCreateProfile = () => {
     // Navigate to the Create Profile page
     navigate('/create-profile');
   };
+
+  // Retrieve scraped jobs from local storage
+  const scrapedJobs = JSON.parse(localStorage.getItem('scrapedJobs'));
+  const jobs = scrapedJobs && scrapedJobs.result ? scrapedJobs.result : []; // Accessing the result array
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-100 to-white py-8">
@@ -31,7 +30,7 @@ const JobDashboard = () => {
           <CardContent className="p-6 text-center">
             <h2 className="text-2xl font-semibold text-gray-700 mb-4">Complete Your Profile</h2>
             <p className="text-gray-600 mb-6">
-               Click below to create your profile and enhance your job recommendations!
+              Click below to create your profile and enhance your job recommendations!
             </p>
             <Button 
               className="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-lg" 
@@ -58,43 +57,29 @@ const JobDashboard = () => {
         <section>
           <h2 className="text-3xl font-semibold mb-6 text-gray-900">Recommended for You</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Example Job Card */}
-            <Card className="shadow-lg hover:shadow-xl transition duration-300">
-              <CardContent className="p-6">
-                <div className="flex items-center mb-4">
-                  <Briefcase className="w-10 h-10 text-blue-600" />
-                  <h3 className="ml-4 text-2xl font-bold text-gray-900">Software Engineer</h3>
-                </div>
-                <p className="text-gray-600 mb-4">Company: TechCorp</p>
-                <p className="text-gray-600 mb-4">Location: Toronto, ON</p>
-                <Button 
-                  className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg" 
-                  onClick={() => handleJobDetails(1)}
-                >
-                  View Details
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* More Job Cards */}
-            <Card className="shadow-lg hover:shadow-xl transition duration-300">
-              <CardContent className="p-6">
-                <div className="flex items-center mb-4">
-                  <Briefcase className="w-10 h-10 text-blue-600" />
-                  <h3 className="ml-4 text-2xl font-bold text-gray-900">Data Scientist</h3>
-                </div>
-                <p className="text-gray-600 mb-4">Company: DataCorp</p>
-                <p className="text-gray-600 mb-4">Location: Vancouver, BC</p>
-                <Button 
-                  className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg" 
-                  onClick={() => handleJobDetails(2)}
-                >
-                  View Details
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Add more cards as necessary */}
+            {jobs.length > 0 ? (
+              jobs.map((job, index) => (
+                <Card key={index} className="shadow-lg hover:shadow-xl transition duration-300">
+                  <CardContent className="p-6">
+                    <div className="flex items-center mb-4">
+                      <Briefcase className="w-10 h-10 text-blue-600" />
+                      <a 
+                        href={job["Job Link"]} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="ml-4 text-2xl font-bold text-gray-900 hover:underline"
+                      >
+                        {job["Job Title"]}
+                      </a>
+                    </div>
+                    <p className="text-gray-600 mb-4">Company: {job.Company || 'Unknown'}</p>
+                    {job.Location && <p className="text-gray-600 mb-4">Location: {job.Location}</p>}
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <p className="text-gray-700">No job recommendations available.</p>
+            )}
           </div>
         </section>
       </div>

@@ -15,7 +15,6 @@ const LoginPage = () => {
     e.preventDefault();
     setErrorMessage('');
 
-    // Check if email or password is empty
     if (!email || !password) {
       setErrorMessage('Please enter both email and password');
       return;
@@ -24,9 +23,7 @@ const LoginPage = () => {
     try {
       const response = await fetch('https://localhost:7222/UserLogin', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
 
@@ -34,17 +31,50 @@ const LoginPage = () => {
 
       if (response.ok) {
         const token = data.result;
-
-        // Store JWT token and navigate to dashboard
         localStorage.setItem('token', token);
-        navigate('/dashboard');
-      } 
-      else {
-      if(data.StatusCode===401) {
-        // Display error if email or password is incorrect
-        setErrorMessage(data.message || 'Email or password is not correct');
+
+        // Fetch user title and location
+        const preferencesResponse = await fetch('https://localhost:7222/GetTitleAndLocation', {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const preferencesData = await preferencesResponse.json();
+
+        if (preferencesResponse.ok) {
+          const { preferredJobTitle, preferredLocation } = preferencesData.result;
+
+          // Call ScrapJob API with job preferences
+          const scrapResponse = await fetch('https://localhost:7222/ScrapJob', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              job_Title: preferredJobTitle,
+              location: preferredLocation,
+            }),
+          });
+
+          const scrapData = await scrapResponse.json();
+
+          if (scrapResponse.ok) {
+            // Save the scraped jobs to local storage
+            localStorage.setItem('scrapedJobs', JSON.stringify(scrapData));
+            console.log('Scraped Jobs:', scrapData);
+            navigate('/dashboard');
+          } else {
+            setErrorMessage(scrapData.message || 'Error scraping jobs');
+          }
+        } else {
+          setErrorMessage(preferencesData.message || 'Error retrieving preferences');
+        }
+      } else {
+        setErrorMessage(data.message || 'Email or password is incorrect');
       }
-    }
     } catch (error) {
       console.error('Error during login:', error);
       setErrorMessage('An error occurred. Please try again.');
@@ -57,14 +87,12 @@ const LoginPage = () => {
         <CardContent className="p-6">
           <h2 className="text-3xl font-bold text-center text-blue-600 mb-6">Login to Your Account</h2>
 
-          {/* Error Message */}
           {errorMessage && (
             <div className="mb-4 text-red-500 text-center font-semibold">
               {errorMessage}
             </div>
           )}
 
-          {/* Email Input */}
           <div className="mb-4">
             <label className="block text-gray-600 font-semibold mb-2" htmlFor="email">Email</label>
             <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
@@ -80,7 +108,6 @@ const LoginPage = () => {
             </div>
           </div>
 
-          {/* Password Input */}
           <div className="mb-6">
             <label className="block text-gray-600 font-semibold mb-2" htmlFor="password">Password</label>
             <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
@@ -96,15 +123,13 @@ const LoginPage = () => {
             </div>
           </div>
 
-          {/* Login Button */}
-          <Button 
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg shadow-lg mb-4" 
+          <Button
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg shadow-lg mb-4"
             onClick={handleLogin}
           >
             Login
           </Button>
 
-          {/* Register Link */}
           <p className="text-center text-gray-600">
             Don't have an account?{' '}
             <Link to="/register" className="text-blue-600 hover:text-blue-700 font-semibold">

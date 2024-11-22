@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using app.DAL.Models;
+using Microsoft.AspNetCore.Http;
 
-namespace app.DAL.Repository
+namespace app.BLL.DTO
 {
-    public interface IResumeRepository : IGenericRepository<Resume>
+    public class ResumeDTO
     {
-        public Task<Guid?> GetResume(Guid userProfileID);
+        public IFormFile fileData { get; set; }
+ 
     }
 }

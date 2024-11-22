@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using FluentValidation;
 using app.BLL.DTO;
+using System.Text.Json.Serialization;
 
 namespace ConfigureManager.cs
 {
@@ -40,9 +41,18 @@ namespace ConfigureManager.cs
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserProfileService, UserProfileService>();
             services.AddScoped<IEmailSenderService, EmailSenderService>();
+            services.AddScoped<IResumeService, ResumeService>(); 
+            services.AddScoped<IJobScrapService, JobScrapService>();  
+            services.AddScoped<IJobRecommendationService, JobRecommendationService>();
+            services.AddScoped<ICleanUpOldJobsRepository, JobRecommendationsRepository>();
+            services.AddScoped<ICleanUpOldJobsRepository, ScrapedJobsRepository>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddHostedService<RemoveOldJobService>();
+            services.AddHttpClient();
             services.AddValidatorsFromAssemblyContaining<UserValidator>();
-           
+            services.AddControllers().AddJsonOptions(x =>
+            x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
         }
 
 

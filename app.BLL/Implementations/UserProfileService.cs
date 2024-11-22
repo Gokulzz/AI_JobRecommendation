@@ -22,6 +22,7 @@ namespace app.BLL.Implementations
             this.unitofWork = unitofWork;
             this.userService = userService;
         }
+        
         public async Task<ApiResponse> GetAllUserProfile()
         {
             var userProfiles = await unitofWork.UserProfileRepository.GetAllAsync();
@@ -31,6 +32,16 @@ namespace app.BLL.Implementations
             }
             return new ApiResponse(200, "User Profiles displayed successfully", userProfiles);
         }
+        public async Task<ApiResponse> GetUserProfileByUserId()
+        {
+            var userId= userService.GetCurrentId();
+            var userProfileId= await unitofWork.UserProfileRepository.GetUserProfileId(userId);
+            if(userProfileId==Guid.Empty)
+            {
+                throw new NotFoundException($"User of this {userProfileId} does not exist");
+            }
+            return new ApiResponse(200, $"USER__PROFILE_ID of this {userProfileId} returned successfully", userProfileId);
+        }
         public async Task<ApiResponse> GetUserProfileById(Guid profileId)
         {
             var userProfileId = await unitofWork.UserProfileRepository.GetAsync(profileId);
@@ -38,7 +49,7 @@ namespace app.BLL.Implementations
             {
                 throw new NotFoundException($"User of this {profileId} does not exist");
             }
-            return new ApiResponse(200, $"User of this {profileId} does not exist.", userProfileId);
+            return new ApiResponse(200, $"User of this {profileId} returned successfully.", userProfileId);
         }
         public async Task<ApiResponse> AddUserProfile(UserProfileDTO profileDTO)
         {
@@ -55,9 +66,29 @@ namespace app.BLL.Implementations
                     Address = profileDTO.Address,
                     ProfileCreatedAt = DateTime.Now
                 };
+                var addJobPreferences = new JobPreferences()
+                {
+                    UserId = userService.GetCurrentId(),
+                    PreferredJobTitle = profileDTO.PreferredJobTitle,
+                    PreferredLocation = profileDTO.PreferredLocation
+                };
                 await unitofWork.UserProfileRepository.PostAsync(addUserProfile);
+                await unitofWork.JobPreferencesRepository.PostAsync(addJobPreferences);
                 await unitofWork.Save();
                 return new ApiResponse(200, "User added successfully", addUserProfile);
+            }
+            catch (Exception ex)
+            {
+                throw new BadRequestException(ex.Message);
+            }
+        }
+        public async Task<ApiResponse> GetJobPreferences()
+        {
+            try
+            {
+                var userId=  userService.GetCurrentId();
+                var get_Data= await unitofWork.JobPreferencesRepository.GetTitleAndLocation(userId);
+                return new ApiResponse(200, "Title and location returned successfully", get_Data);
             }
             catch (Exception ex)
             {

@@ -12,6 +12,8 @@ const CreateProfile = () => {
     currentJobTitle: '',
     currentCompany: '',
     Address: '',
+    PreferredJobTitle: '',
+    PreferredLocation: ''
   });
 
   const [resumeFile, setResumeFile] = useState(null); // State for the resume file
@@ -47,7 +49,7 @@ const CreateProfile = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json', // Set the content type to JSON as my server expects the input field in JSON
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${token}`,//send the jwt token with request 
         },
         body: JSON.stringify(profileDataToSend), // Convert the object to a JSON string
       });
@@ -114,7 +116,7 @@ const CreateProfile = () => {
               <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Form Fields */}
-                  {['firstName', 'lastName', 'phoneNumber', 'experienceLevel', 'currentJobTitle', 'currentCompany', 'Address'].map((field) => (
+                  {['firstName', 'lastName', 'phoneNumber', 'experienceLevel', 'currentJobTitle', 'currentCompany', 'Address', 'PreferredJobTitle', 'PreferredLocation'].map((field) => (
                     <div key={field}>
                       <label className="block text-gray-700 mb-1" htmlFor={field}>
                         {field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1')}

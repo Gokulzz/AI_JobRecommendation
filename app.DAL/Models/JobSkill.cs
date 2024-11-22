@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using static app.DAL.Models.ScrapedJobs;
 
@@ -15,6 +16,7 @@ namespace app.DAL.Models
 
         [Required]
         [MaxLength(255)]
+        
         public string SkillName { get; set; } 
 
         [MaxLength(500)]
