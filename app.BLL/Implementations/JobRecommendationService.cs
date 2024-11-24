@@ -50,8 +50,9 @@ namespace app.BLL.Implementations
             var jsonPayload = JsonConvert.SerializeObject(payload);
             Console.WriteLine(jsonPayload);
             var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+            //since my flask is running inside the container so using docker built in dns
             var url = "http://localhost:6000/calculate_RelevanceScore";
-            //use httpclient to send request to external server with json content type
+           //use httpclient to send request to external server with json content type
             var response = await httpClient.PostAsync(url, content);
             var result = await response.Content.ReadAsStringAsync();
             Console.WriteLine(result);

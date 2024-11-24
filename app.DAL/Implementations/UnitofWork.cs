@@ -28,7 +28,7 @@ namespace app.DAL.Implementations
         public IJobPreferencesRepository JobPreferencesRepository { get; }
         public IScrapedJobsRepository ScrapedJobsRepository { get; }
         public IJobRecommendationsRepository JobRecommendationsRepository { get; }
-      
+        public IPasswordResetRepository PasswordResetRepository { get; }    
         public UnitofWork(IServiceScopeFactory serviceScopeFactory)
         {
             _serviceScopeFactory = serviceScopeFactory;
@@ -45,6 +45,7 @@ namespace app.DAL.Implementations
             JobPreferencesRepository= new JobPreferencesRepository(_context);
             ScrapedJobsRepository= new ScrapedJobsRepository(_context);
             JobRecommendationsRepository= new JobRecommendationsRepository(_context);
+            PasswordResetRepository= new PasswordResetRepository(_context);
 
             
         }

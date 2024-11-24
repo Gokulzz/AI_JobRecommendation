@@ -19,6 +19,7 @@ namespace app.DAL.Repository
         public IJobPreferencesRepository JobPreferencesRepository { get; }
         public IScrapedJobsRepository ScrapedJobsRepository { get; }    
         public IJobRecommendationsRepository JobRecommendationsRepository { get; }
+        public IPasswordResetRepository PasswordResetRepository { get; }
         public Task Save();
     }
 }

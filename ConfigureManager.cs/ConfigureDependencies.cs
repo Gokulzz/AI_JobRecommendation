@@ -37,6 +37,7 @@ namespace ConfigureManager.cs
             services.AddScoped<IJobRecommendationsRepository, JobRecommendationsRepository>();
             services.AddScoped<IJobSkillRepository, JobSkillRepository>();
             services.AddScoped<IJobPreferencesRepository, JobPreferencesRepository>();
+            services.AddScoped<IPasswordResetRepository, PasswordResetRepository>();
             services.AddScoped<IUnitofWork, UnitofWork>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserProfileService, UserProfileService>();
@@ -44,12 +45,14 @@ namespace ConfigureManager.cs
             services.AddScoped<IResumeService, ResumeService>(); 
             services.AddScoped<IJobScrapService, JobScrapService>();  
             services.AddScoped<IJobRecommendationService, JobRecommendationService>();
+            services.AddScoped<IPasswordResetService, PasswordResetService>();  
             services.AddScoped<ICleanUpOldJobsRepository, JobRecommendationsRepository>();
             services.AddScoped<ICleanUpOldJobsRepository, ScrapedJobsRepository>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddHostedService<RemoveOldJobService>();
             services.AddHttpClient();
             services.AddValidatorsFromAssemblyContaining<UserValidator>();
+            services.AddValidatorsFromAssemblyContaining<PasswordValidator>();
             services.AddControllers().AddJsonOptions(x =>
             x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
