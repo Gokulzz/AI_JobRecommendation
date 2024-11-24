@@ -176,7 +176,7 @@ namespace app.BLL.Implementations
             return new ApiResponse(200, "User Verified Successfully", user);
         }
 
-        public static void CreatePasswordHash(string Password, out byte[] passwordHash, out byte[] passwordsalt)
+        public void CreatePasswordHash(string Password, out byte[] passwordHash, out byte[] passwordsalt)
         {
             using (var hmac = new HMACSHA512())
             {

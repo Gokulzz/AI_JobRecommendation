@@ -19,5 +19,6 @@ namespace app.BLL.Services
         public Task<ApiResponse> VerifyUser(Guid VerificationToken);
         public Task<ApiResponse> LoginUser(UserLoginDTO userLoginDTO);
         public Guid GetCurrentId();
+        public abstract void CreatePasswordHash(string Password, out byte[] passwordHash, out byte[] passwordsalt);
     }
 }

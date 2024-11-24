@@ -21,6 +21,7 @@ namespace app.DAL.Models
         public ICollection<JobRecommendation>? jobRecommendations { get; set; }
         public ICollection<Skill>? skills { get; set; }
         public ICollection<UserActivity>? activities { get; set; }  
+        public ICollection<PasswordReset>? passwordReset { get; set; }
 
 
 

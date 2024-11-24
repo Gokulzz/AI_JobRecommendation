@@ -31,6 +31,7 @@ namespace app.DAL.Data
             modelBuilder.Entity<JobSkill>().HasKey(x => x.JobSkillId);
             modelBuilder.Entity<JobRecommendation>().HasKey(x => x.JobRecommendationId);
             modelBuilder.Entity<JobPreferences>().HasKey(x => x.JobPreferencesId);
+            modelBuilder.Entity<PasswordReset>().HasKey(x => x.Id);
             modelBuilder.Entity<ScrapedJobs>().Property(x => x.Salary)
                 .HasColumnType("decimal(10,2)");
             modelBuilder.Entity<JobPreferences>().Property(x => x.MinimumSalary)
@@ -56,7 +57,9 @@ namespace app.DAL.Data
             modelBuilder.Entity<User>()
                 .HasMany(x => x.activities).WithOne(x => x.User)
                 .HasForeignKey(x => x.UserId);
-            
+            modelBuilder.Entity<User>()
+                .HasMany(x => x.passwordReset).WithOne(x => x.user)
+                .HasForeignKey(x => x.userId);
 
         }
         public DbSet<User> Users { get; set; }
@@ -69,6 +72,7 @@ namespace app.DAL.Data
         public DbSet<ScrapedJobs> ScrapedJobs { get; set; }
         public DbSet<JobSkill> JobSkills { get; set; }
         public DbSet<JobRecommendation> JobRecommendations { get; set; }
-        public DbSet<JobPreferences> JobPreferences { get; set; }   
+        public DbSet<JobPreferences> JobPreferences { get; set; } 
+        public DbSet<PasswordReset> PasswordResets { get; set; }
     }
 }
