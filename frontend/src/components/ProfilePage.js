@@ -79,16 +79,16 @@ const CreateProfile = () => {
         } else {
           // Handle resume upload error
           console.error('Resume upload error:', await resumeResponse.text());
-          setErrorMessage('Failed to upload your resume. Please try again.'); // Set a user-friendly message
+          setErrorMessage('Failed to upload your resume. Please try again.'); 
         }
       } else {
         // Handle profile creation error
         console.error('Profile creation error:', await profileResponse.text());
-        setErrorMessage('Failed to create your profile. Please check your inputs and try again.'); // Set a user-friendly message
+        setErrorMessage('Failed to create your profile. Please check your inputs and try again.'); 
       }
     } catch (error) {
       console.error('Error:', error);
-      setErrorMessage('An unexpected error occurred. Please try again later.'); // Set a generic error message
+      setErrorMessage('An unexpected error occurred. Please try again later.'); 
     }
   };
 

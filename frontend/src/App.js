@@ -6,6 +6,8 @@ import VerificationPage from './components/VerificationPage';
 import LoginPage  from './components/LoginPage';  
 import DashBoardPage from './components/DashboardPage';
 import ProfilePage  from './components/ProfilePage';
+import VerifyEmailPage from './components/forgot-password';
+import PasswordResetPage from './components/PasswordResetPage';
 
 const App = () => {
   return (
@@ -18,10 +20,12 @@ const App = () => {
         <Route path="/register" element={<RegistrationPage />} />
 
         {/* Verification Page Route */}
-        <Route path="/verify" element={<VerificationPage />} /> {/* Add this line */}
+        <Route path="/verify" element={<VerificationPage />} /> 
         <Route path="/login" element={<LoginPage />} />
         <Route path="/dashboard" element={<DashBoardPage/>} />
         <Route path="/create-profile" element={<ProfilePage/>} />
+        <Route path="/forgot-password" element= {<VerifyEmailPage/>}/>
+        <Route path="/reset-password" element= {<PasswordResetPage/>}/>
         
       </Routes>
     </Router>

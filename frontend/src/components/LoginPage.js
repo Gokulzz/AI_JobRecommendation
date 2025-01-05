@@ -33,45 +33,8 @@ const LoginPage = () => {
         const token = data.result;
         localStorage.setItem('token', token);
 
-        // Fetch user title and location
-        const preferencesResponse = await fetch('https://localhost:7222/GetTitleAndLocation', {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const preferencesData = await preferencesResponse.json();
-
-        if (preferencesResponse.ok) {
-          const { preferredJobTitle, preferredLocation } = preferencesData.result;
-
-          // Call ScrapJob API with job preferences
-          const scrapResponse = await fetch('https://localhost:7222/ScrapJob', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              job_Title: preferredJobTitle,
-              location: preferredLocation,
-            }),
-          });
-
-          const scrapData = await scrapResponse.json();
-
-          if (scrapResponse.ok) {
-            // Save the scraped jobs to local storage
-            localStorage.setItem('scrapedJobs', JSON.stringify(scrapData));
-            console.log('Scraped Jobs:', scrapData);
-            navigate('/dashboard');
-          } else {
-            setErrorMessage(scrapData.message || 'Error scraping jobs');
-          }
-        } else {
-          setErrorMessage(preferencesData.message || 'Error retrieving preferences');
-        }
+        // Navigate to the dashboard after login
+        navigate('/dashboard');
       } else {
         setErrorMessage(data.message || 'Email or password is incorrect');
       }
@@ -129,6 +92,12 @@ const LoginPage = () => {
           >
             Login
           </Button>
+
+          <p className="text-center text-gray-600 mb-4">
+            <Link to="/forgot-password" className="text-blue-600 hover:text-blue-700 font-semibold">
+              Forgot Password?
+            </Link>
+          </p>
 
           <p className="text-center text-gray-600">
             Don't have an account?{' '}
