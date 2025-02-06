@@ -1,26 +1,26 @@
-AI powered Job Recommendation System
+#🚀 JOB RECOMMENDATION SYSTEM WITH AI-POWERED RESUME PARSING
 
-🚀 Overview
+🌟 OVERVIEW
 
 Finding the right job can be overwhelming, with endless searches across multiple job platforms like LinkedIn, Indeed, and Glassdoor. This AI-powered Job Recommendation System simplifies the process by scraping job listings, analyzing your profile, and presenting the most relevant opportunities—all in one place.
 
 This system integrates a .NET backend with a Python-based AI model to deliver highly relevant job recommendations. The AI model parses resumes, extracts key skills, and matches job descriptions using advanced NLP techniques.
 
-🔑 Key Features
+🔑 KEY FEATURES
 
-🏆 User Profile Management
+🏆 USER PROFILE MANAGEMENT
 
 Create and manage profiles, including job preferences (title, location, and skills) for better recommendations.
 
 Store parsed skills from uploaded resumes for enhanced job matching.
 
-📄 Resume Parsing
+📄 RESUME PARSING
 
 Upload your resume, and let the AI extract key skills and experience.
 
 Automatically integrates extracted information into the user profile.
 
-🎯 Tailored Job Recommendations
+🎯 TAILORED JOB RECOMMENDATIONS
 
 Scrapes job listings from Indeed and other platforms using Selenium & Beautiful Soup.
 
@@ -28,27 +28,27 @@ Uses TF-IDF vectorization & cosine similarity to analyze job descriptions and ma
 
 Assigns a relevance score and recommends jobs above a predefined threshold.
 
-⏳ Real-Time Job Scraping & Updates
+⏳ REAL-TIME JOB SCRAPING & UPDATES
 
 Continuously scrapes and updates job postings to ensure fresh recommendations.
 
 Stores job listings efficiently in SQL Server.
 
-🏗 Asynchronous Model Training
+🏗 ASYNCHRONOUS MODEL TRAINING
 
 Uses Celery & Redis to enable background training without performance impact.
 
 Applies linear regression to improve job relevance scoring dynamically.
 
-📦 Fully Containerized Deployment
+📦 FULLY CONTAINERIZED DEPLOYMENT
 
 Dockerized services for seamless scalability and deployment.
 
 Separate containers for Flask API, Job Scraper, Redis, and Relevance Calculator.
 
-🛠 Tech Stack
+🛠 TECH STACK
 
-Backend:
+🔹 BACKEND
 
 .NET Core (C#) for main application logic.
 
@@ -58,7 +58,7 @@ SQL Server for structured job and user data storage.
 
 JWT Authentication for secure user sessions.
 
-AI & Machine Learning:
+🔹 AI & MACHINE LEARNING
 
 TF-IDF & Cosine Similarity for job relevance scoring.
 
@@ -66,11 +66,11 @@ Linear Regression for adaptive job matching.
 
 NLP-based Resume Parsing to extract key skills.
 
-Frontend:
+🔹 FRONTEND
 
 React.js for a responsive and dynamic UI.
 
-DevOps & Containerization:
+🔹 DEVOPS & CONTAINERIZATION
 
 Docker for containerized microservices.
 
@@ -78,9 +78,9 @@ Redis & Celery for asynchronous background tasks.
 
 Selenium for automated job scraping.
 
-⚡ Getting Started
+⚡ GETTING STARTED
 
-🔹 Prerequisites
+🔹 PREREQUISITES
 
 Ensure you have the following installed:
 
@@ -94,10 +94,10 @@ Docker
 
 Redis
 
-🔹 Installation
+🔹 INSTALLATION
 
 # Clone the repository
-git clone https://github.com/your-username/job-recommendation-system.git
+git clone [https://github.com/your-username/job-recommendation-system.git](https://github.com/Gokulzz/AI_JobRecommendation.git)
 cd job-recommendation-system
 
 # Start backend services
@@ -114,24 +114,18 @@ cd ../frontend
 npm install
 npm start
 
-🎯 How It Works
+🎯 HOW IT WORKS
 
-User Registration & Resume Upload: Users sign up and upload resumes.
+1️⃣ User Registration & Resume Upload: Users sign up and upload resumes.
+2️⃣ Resume Parsing: AI extracts skills and job preferences from the resume.
+3️⃣ Job Scraping: Selenium fetches job listings from Indeed & other sources.
+4️⃣ Relevance Scoring: AI model scores jobs using cosine similarity.
+5️⃣ Job Recommendations: Users get personalized job matches based on their profile.
 
-Resume Parsing: AI extracts skills and job preferences from the resume.
-
-Job Scraping: Selenium fetches job listings from Indeed & other sources.
-
-Relevance Scoring: AI model scores jobs using cosine similarity.
-
-Job Recommendations: Users get personalized job matches based on their profile.
-
-📜 Design Patterns Used
+📜 DESIGN PATTERNS USED
 
 Repository Pattern for decoupled data access.
 
 Unit of Work Pattern for efficient database transactions.
 
 Dependency Injection for scalable and testable code.
-
-
