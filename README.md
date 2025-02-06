@@ -97,7 +97,7 @@ Redis
 🔹 INSTALLATION
 
 # Clone the repository
-git clone [https://github.com/your-username/job-recommendation-system.git](https://github.com/Gokulzz/AI_JobRecommendation.git)
+git clone  https://github.com/Gokulzz/AI_JobRecommendation.git
 cd job-recommendation-system
 
 # Start backend services
