@@ -14,6 +14,7 @@ namespace AI_JobRecommendation.Controllers
             this.UserService = UserService; 
         }
   
+
     
     [HttpGet("GetUser")]
     public async Task<ApiResponse> GetUser(Guid id)

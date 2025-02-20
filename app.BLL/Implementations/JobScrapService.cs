@@ -36,14 +36,15 @@ namespace app.BLL.Implementations
             return new ApiResponse(200, "Scraped Jobs returned successfully", get_ScrapedJobs);
         }
 
-        public async Task<ApiResponse> ScrapJobs(JobPreferencesDTO jobPreferencesDTO)
+        public async Task<ApiResponse> ScrapJobs(Guid userId)
         {
-            if (jobPreferencesDTO == null || string.IsNullOrWhiteSpace(jobPreferencesDTO.job_Title) || string.IsNullOrWhiteSpace(jobPreferencesDTO.location))
+            var jobPreferences= await _unitofWork.JobPreferencesRepository.GetTitleAndLocation(userId);
+            if (string.IsNullOrWhiteSpace(jobPreferences.PreferredJobTitle) || string.IsNullOrWhiteSpace(jobPreferences.PreferredLocation))
             {
                 throw new BadRequestException("Job title and location are required.");
             }
 
-            var jsonContent = JsonSerializer.Serialize(jobPreferencesDTO);
+            var jsonContent = JsonSerializer.Serialize(jobPreferences);
             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("http://localhost:5000/scrape_jobs", content);
 

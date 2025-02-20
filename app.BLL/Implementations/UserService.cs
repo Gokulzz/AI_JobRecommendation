@@ -18,6 +18,8 @@ using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace app.BLL.Implementations
@@ -29,13 +31,18 @@ namespace app.BLL.Implementations
         private readonly IValidator<UserDTO> validator;
         private readonly IConfiguration configuration;
         private readonly IHttpContextAccessor httpContextAccessor;
-        public UserService(IUnitofWork unitofWork, IValidator<UserDTO> validator, IConfiguration configuration, IEmailSenderService emailSenderService, IHttpContextAccessor httpContextAccessor)
+        private readonly ILogger<UserService> logger;
+
+
+        public UserService(IUnitofWork unitofWork, IValidator<UserDTO> validator, IConfiguration configuration, IEmailSenderService emailSenderService, IHttpContextAccessor httpContextAccessor, ILogger<UserService> logger)
         {
             this.unitofWork = unitofWork;
             this.validator = validator;
             this.configuration = configuration;
             this.emailSenderService = emailSenderService;
             this.httpContextAccessor = httpContextAccessor;
+            this.logger = logger;
+          
         }
         public async Task<ApiResponse> GetAllUser()
         {
@@ -46,6 +53,11 @@ namespace app.BLL.Implementations
         public async Task<ApiResponse> GetUser(Guid id)
         {
             var find_id = await unitofWork.UserRepository.GetAsync(id);
+            if(find_id==null)
+            {
+                throw new NotFoundException($"Could not find user of this id={id}");
+
+            }
             return new ApiResponse(200, $"User of {id} displayed successfully", find_id);
         }
         public async Task<ApiResponse> AddUser(UserDTO userDTO)
@@ -125,12 +137,12 @@ namespace app.BLL.Implementations
                     var token = new JwtSecurityToken(
                         issuer: configuration.GetSection("JWT").GetSection("ValidIssuer").Value,
                         audience: configuration.GetSection("JWT").GetSection("ValidAudience").Value,
-                        expires: DateTime.Now.AddMinutes(5),
+                        expires: DateTime.UtcNow.AddMinutes(30),
                         claims: Claims,
                         signingCredentials: SigningCredentials
                         );
                     var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-                    return new ApiResponse(201, "JWT Token generated successfully", tokenString);
+                 return new ApiResponse(201, "JWT Token generated successfully", tokenString);
 
                 }
                 else

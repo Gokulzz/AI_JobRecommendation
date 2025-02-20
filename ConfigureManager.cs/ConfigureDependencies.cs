@@ -15,6 +15,9 @@ using Microsoft.Extensions.DependencyInjection;
 using FluentValidation;
 using app.BLL.DTO;
 using System.Text.Json.Serialization;
+using Polly.Extensions.Http;
+using Polly;
+using StackExchange.Redis;
 
 namespace ConfigureManager.cs
 {
@@ -42,15 +45,32 @@ namespace ConfigureManager.cs
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserProfileService, UserProfileService>();
             services.AddScoped<IEmailSenderService, EmailSenderService>();
-            services.AddScoped<IResumeService, ResumeService>(); 
-            services.AddScoped<IJobScrapService, JobScrapService>();  
+            services.AddScoped<IResumeService, ResumeService>();
+            services.AddScoped<IJobScrapService, JobScrapService>();
             services.AddScoped<IJobRecommendationService, JobRecommendationService>();
             services.AddScoped<IPasswordResetService, PasswordResetService>();  
             services.AddScoped<ICleanUpOldJobsRepository, JobRecommendationsRepository>();
             services.AddScoped<ICleanUpOldJobsRepository, ScrapedJobsRepository>();
+            services.AddSingleton<IRedisService, RedisService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddHostedService<RemoveOldJobService>();
+            services.AddHostedService<RemoveDuplicateJobService>();
+            services.AddHostedService<BackgroundJobScrapService>();
             services.AddHttpClient();
+            services.AddHttpClient<IJobScrapService, JobScrapService>()
+            .AddPolicyHandler(HttpPolicyExtensions.HandleTransientHttpError()
+            .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+            .WaitAndRetryAsync(
+             2,
+             retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+             onRetry: (response, timespan, retryAttempt, context) =>
+             {
+                 Task.Run(() =>
+                 {
+                     Console.WriteLine($"Retry {retryAttempt} after {timespan.TotalSeconds}s due to {response.Exception?.Message ?? response.Result.StatusCode.ToString()}");
+                 });
+             }
+             ));
             services.AddValidatorsFromAssemblyContaining<UserValidator>();
             services.AddValidatorsFromAssemblyContaining<PasswordValidator>();
             services.AddControllers().AddJsonOptions(x =>

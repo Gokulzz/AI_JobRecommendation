@@ -5,12 +5,17 @@ using app.BLL.DTO;
 using app.BLL.Services;
 using app.DAL.Data;
 using ConfigureManager.cs;
+using FluentAssertions.Common;
+using Infrastructure.SignalR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using StackExchange.Redis;
+
 try
 {
 
@@ -28,17 +33,17 @@ try
     logger.Information("App starting");
     //we will bind the properties of emailconfiguration properties from our appsettings.json to type emailconfiguration which is our DTO
     //for email Configuration
-    var emailConfig = builder.Configuration
-        .GetSection("EmailConfiguration")
-        .Get<EmailConfigurationDTO>();
-    builder.Services.AddSingleton(emailConfig);
-    //builder.Services.Configure<EmailConfigurationDTO>(builder.Configuration.GetSection("EmailConfiguration"));
+    //var emailConfig = builder.Configuration
+    //    .GetSection("EmailConfiguration")
+    //    .Get<EmailConfigurationDTO>();
+    //builder.Services.AddSingleton(emailConfig);
+    builder.Services.Configure<EmailConfigurationDTO>(builder.Configuration.GetSection("EmailConfiguration"));
+    builder.Services.ConfigureDependency();
     // Add services to the container.
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
-    builder.Services.ConfigureDependency();
     builder.Services.AddDbContext<DataContext>(options =>
     {
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -70,7 +75,7 @@ try
             },
             new List <string>()
         }
-    });
+        });
     });
     builder.Services.AddAuthentication(options =>
     {
@@ -91,19 +96,60 @@ try
                 .GetSection("SecretKey").Value)),
                 NameClaimType = ClaimTypes.NameIdentifier
             };
+            //to set userIdentifier for SignalR
+            // Enable JWT authentication for SignalR
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    var accessToken = context.Request.Query["access_token"];
+
+                    // If the request is for SignalR hub
+                    var path = context.HttpContext.Request.Path;
+                    if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/userActivityHub"))
+                    {
+                        context.Token = accessToken;
+                    }
+
+                    return Task.CompletedTask;
+                }
+            };
 
         });
+   
+        builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+        {
+
+            var connectionString = builder.Configuration.GetSection("RedisServerURL").Value;
+  
+                if (string.IsNullOrEmpty(connectionString))
+                {
+                    throw new InvalidOperationException("Redis connection string is not configured.");
+                }
+                var configuration = ConfigurationOptions.Parse(connectionString, true);
+                return ConnectionMultiplexer.Connect(configuration);
+            
+          
+
+        });
+    builder.Services.AddSignalR();
+
+
     builder.Services.AddCors(options =>
     {
-        options.AddPolicy("AllowAll", builder =>
+        options.AddPolicy("AllowSpecificOrigin", policy =>
         {
-            builder.AllowAnyOrigin()
-                   .AllowAnyMethod()
-                   .AllowAnyHeader();
+            policy.WithOrigins("http://localhost:3000") 
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials(); 
         });
     });
 
+
+
     var app = builder.Build();
+
 
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
@@ -118,12 +164,12 @@ try
 
     app.UseHttpsRedirection();
 
-  
+    app.UseCors("AllowSpecificOrigin");
     app.UseAuthentication();
     app.UseAuthorization();
+    app.MapHub<UserActivity>("/userActivityHub");
     app.UseStaticFiles();
     app.MapControllers();
-    app.UseCors("AllowAll");
     app.Run();
 }
 catch(Exception ex)

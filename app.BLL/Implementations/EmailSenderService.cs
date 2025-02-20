@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using app.BLL.DTO;
+﻿using app.BLL.DTO;
 using app.BLL.Services;
-using MimeKit;
 using MailKit.Net.Smtp;
+using Microsoft.Extensions.Options;
+using MimeKit;
 
 namespace app.BLL.Implementations
 {
     public class EmailSenderService : IEmailSenderService
     {
         private readonly EmailConfigurationDTO emailConfiguration;
-        public EmailSenderService(EmailConfigurationDTO emailConfiguration)
+        public EmailSenderService(IOptions<EmailConfigurationDTO> emailConfiguration)
         {
-            this.emailConfiguration = emailConfiguration;
+            this.emailConfiguration = emailConfiguration.Value;
         }
         public async Task SendEmailAsync(MessageDTO message)
         {
