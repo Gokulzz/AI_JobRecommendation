@@ -12,6 +12,6 @@ namespace app.BLL.Services
     public interface IJobScrapService
     {
         public Task<ApiResponse> GetScrapJobs();
-        public Task<ApiResponse> ScrapJobs(JobPreferencesDTO jobPreferencesDTO);
+        public Task<ApiResponse> ScrapJobs(Guid userId);
     }
 }

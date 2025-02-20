@@ -25,6 +25,18 @@ namespace app.DAL.Implementations
         {
             await dataContext.Database.ExecuteSqlRawAsync("EXEC dbo.DeleteOldJobs");
         }
+        public async Task DeleteDuplicateJobs()
+        {
+            await dataContext.Database.ExecuteSqlRawAsync(@"
+            WITH CTE AS(
+            SELECT  relevanceScore,
+            ROW_NUMBER() OVER(PARTITION BY relevanceScore ORDER BY relevanceScore) as row_number
+            from dbo.JobRecommendations
+            )
+            delete  from CTE
+            where row_number >1;
+            ");
+        }
 
     }
 }

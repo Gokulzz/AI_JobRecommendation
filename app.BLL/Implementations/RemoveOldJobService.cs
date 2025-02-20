@@ -12,7 +12,7 @@ namespace app.BLL.Implementations
     {
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILogger<RemoveOldJobService> _logger;
-        private readonly TimeSpan _interval = TimeSpan.FromMinutes(30);
+        private readonly TimeSpan _interval = TimeSpan.FromDays(1);
 
         public RemoveOldJobService(IServiceScopeFactory scopeFactory, ILogger<RemoveOldJobService> logger)
         {

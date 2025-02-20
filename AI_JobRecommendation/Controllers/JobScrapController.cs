@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace AI_JobRecommendation.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class JobScrapController : Controller
     {
         
@@ -30,12 +30,12 @@ namespace AI_JobRecommendation.Controllers
             var result = await _jobScrapService.GetScrapJobs();
             return result;
         }
-        [HttpPost("ScrapJob")]
-        public async Task<IActionResult> ScrapJob([FromBody] JobPreferencesDTO jobPreferencesDTO)
-        {
-            var result= await _jobScrapService.ScrapJobs(jobPreferencesDTO);
-            return Ok(result);
+        //[HttpPost("ScrapJob")]
+        //public async Task<IActionResult> ScrapJob()
+        //{
+        //    var result = await _jobScrapService.ScrapJobs();
+        //    return Ok(result);
 
-        }
+        //}
     }
 }
